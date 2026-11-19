@@ -1,0 +1,9 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "markdown.editor.quickSuggestions": false,
+    "terminal.integrated.suggest.quickSuggestions": {
+        "arguments": "on",
+        "commands": "on",
+        "unknown": "on"
+    }
+}
