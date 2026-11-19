@@ -12,7 +12,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 df = pd.read_csv('matches.csv')
-#EDA (Exploratory data analysis) 
+#EDA (Exploratory data analysis)
 print("sample:")
 print(df.head())
 print("\n data info:")
@@ -24,7 +24,7 @@ print(f"\n Missing values in target (xg) before cleaning: {df['xg'].isna().sum()
 df = df.dropna(subset=['xg'])
 print(f"Dataset shape after dropping NaN in xg: {df.shape}") # الداتا بعد الclaening فيها كام صف وكام عمود
 
-#  (xg التارجت )Histogram 
+#  (xg التارجت )Histogram
 plt.figure(figsize=(8, 4))
 sns.histplot(df['xg'], kde=True, color='purple')
 plt.title('Distribution of Expected Goals (xg)')
@@ -41,11 +41,11 @@ print("\n-----------------------------")
 high_card_cols = []
 for col, val in cat_cardinality.items():
     if val > 20:                           # one hot encoding هيعمل اعمدة لكل قيمة مختلفة او غير مكررة فبنعملها علشان نتجنب الniose في(KNN)
-        high_card_cols.append(col)        
+        high_card_cols.append(col)
 
 print(f"Dropping high-cardinality categorical columns: {high_card_cols}")
 
-drop_cols = ['Unnamed: 0', 'xg', 'match report', 'notes', 'date', 'time', 'gf'] + high_card_cols
+drop_cols = ['Unnamed: 0', 'xg', 'match report', 'notes', 'date', 'time', 'gf', 'ga', 'result'] + high_card_cols
 X = df.drop(columns=[col for col in drop_cols if col in df.columns])  # هنتنبأ ال xg  بالداتا دي
 y = df['xg']  #target
 
@@ -54,7 +54,7 @@ categorical_cols = X.select_dtypes(include=['object', 'category']).columns.tolis
 print(f"\n Numerical columns: {numerical_cols}")
 print(f"Categorical columns: {categorical_cols}")
 print("\n----------------------------")
-#  visualization للقيم العددية 
+#  visualization للقيم العددية
 df[numerical_cols].hist(bins=20, figsize=(12, 8))
 plt.tight_layout()
 plt.show()
@@ -73,7 +73,7 @@ print(f"\n Training set size: {X_train.shape[0]}")
 print(f"Validation set size: {X_val.shape[0]}")
 print(f"Test set size: {X_test.shape[0]}")
 
-# the pipline 
+# the pipline
 num_transformer = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='median')), #هيستبدل ال قيم المفقودة بال وسيط الحسابي
     ('scaler', StandardScaler())
@@ -108,7 +108,7 @@ print(f"R2 Score: {r2_score(y_val, y_val_pred_lr):.4f}")
 # KNN pipline
 best_k = None
 best_val_r2 = -float('inf')
-k_values = list(range(1, 25))
+k_values = list(range(1, 51))
 val_r2_scores = []
 
 for k in k_values:
@@ -166,4 +166,10 @@ for name, model in [("Linear Regression", lr_pipeline), ("KNN Regressor", best_k
     plt.grid(True)
     plt.show()
     print("\n-----------------------------------")
-print("linear regression is better then KNN model in this case ")
+print("\nConclusion: Linear Regression performs better than KNN on the test set (compare R2 and RMSE above).")
+print("Reason: xg is roughly linear in shots (sh, sot) and shot-related features, which a linear model captures directly,")
+print("while KNN averages neighbours in a higher-dimensional space (one-hot columns) with a small training set.")
+
+import joblib
+joblib.dump(lr_pipeline,       'lr_model.joblib')
+joblib.dump(best_knn_pipeline, 'knn_model.joblib')
