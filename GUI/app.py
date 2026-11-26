@@ -97,27 +97,86 @@ with gr.Blocks(theme=theme, css=css) as demo:
     with gr.Row():
 
         with gr.Column(scale=1):
-            gr.Markdown("### MAIN MENU")
+                gr.Markdown("### MAIN MENU")
 
-            numerical_btn = gr.Button(
-                "📊 Numerical",
-                variant="secondary"
-            )
+                numerical_btn = gr.Button(
+                    "📊 Numerical",
+                    variant="secondary"
+                )
 
-            image_btn = gr.Button(
-                "🖼️ Image",
-                variant="primary"
-            )
+                image_btn = gr.Button(
+                    "🖼️ Image",
+                    variant="primary"
+                )
 
-            text_btn = gr.Button(
-                "📝 Text",
-                variant="secondary"
-            )
+                text_btn = gr.Button(
+                    "📝 Text",
+                    variant="secondary"
+                )
 
+        
         with gr.Column(scale=4):
 
             with gr.Column(visible=False) as numerical_page:
-                gr.Markdown("## 📊 Numerical Prediction")
+
+                gr.Markdown("""
+                ## 📊 Numerical Prediction
+                Predict Expected Goals (xG) based on match statistics.
+                """)
+
+                gr.Markdown("### 📈 Match Statistics")
+
+                with gr.Row():
+                    sh_input = gr.Number(
+                        label="Shots (sh)",
+                        precision=0,
+                        minimum=0,
+                        placeholder="Enter number of shots"
+                    )
+
+                    dist_input = gr.Number(
+                        label="Distance (dist)",
+                        minimum=0,
+                        placeholder="Enter distance"
+                    )
+
+                pkatt_input = gr.Number(
+                    label="Penalty Attempts (pkatt)",
+                    precision=0,
+                    minimum=0,
+                    placeholder="Enter penalty attempts"
+                )
+
+                gr.Markdown("### ⚽ Match Details")
+
+                with gr.Row():
+                    venue_input = gr.Dropdown(
+                        choices=[],
+                        label="Venue",
+                        interactive=True
+                    )
+
+                    day_input = gr.Dropdown(
+                        choices=[],
+                        label="Day",
+                        interactive=True
+                    )
+
+                formation_input = gr.Dropdown(
+                    choices=[],
+                    label="Formation",
+                    interactive=True
+                )
+
+                numerical_predict_btn = gr.Button(
+                    "⚡ Predict xG",
+                    variant="primary"
+                )
+
+                numerical_output = gr.Markdown(
+                    "### Expected Goals (xG): --"
+                )
+
 
             with gr.Column(visible=True) as image_page:
 
